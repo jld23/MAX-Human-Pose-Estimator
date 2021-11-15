@@ -22,7 +22,7 @@ from maxfw.core import MAX_API, PredictAPI
 input_parser = MAX_API.parser()
 input_parser.add_argument('file', type=FileStorage, location='files',
                           required=True,
-                          help='An image encoded as JPEG, PNG, or TIFF')
+                          help='An image encoded as MP4, JPEG, PNG, or TIFF')
 
 body_parts_prediction = MAX_API.model('body_parts_prediction', {
     'part_id': fields.Integer(required=True,
@@ -75,11 +75,23 @@ class ModelPredictAPI(PredictAPI):
         """Make a prediction given input data"""
         result = {'status': 'error'}
         args = input_parser.parse_args()
+        print("about to read file")
         input_data = args['file'].read()
-        image = self.model_wrapper._read_image(input_data)
+        cf = args['contact'].read()
+        # TODO accept video file
+        # print("input_data={}".format(type(input_data)))
+        with open('/tmp/file1.mp4', 'wb') as f:
+            f.write(input_data)
+        f.close()
 
-        label_preds = self.model_wrapper.predict(image)
-        result['predictions'] = label_preds
+        video = self.model_wrapper._read_video(input_data)
+        for frame in video:
+            out = self.model_wrapper.predict(frame)
+            print(type(out),out)
+
+
+        # label_preds = self.model_wrapper.predict(image)
+        # result['predictions'] = label_preds
         result['status'] = 'ok'
 
         return result

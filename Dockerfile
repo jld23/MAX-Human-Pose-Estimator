@@ -20,7 +20,7 @@ FROM quay.io/codait/max-base:v1.4.0
 ARG model_bucket=https://max-cdn.cdn.appdomain.cloud/max-human-pose-estimator/1.0.0
 ARG model_file=assets.tar.gz
 
-RUN sudo apt-get update && sudo apt-get install -y gcc swig libgtk2.0 \
+RUN sudo apt-get update && sudo apt-get install -y gcc swig libgtk2.0 vim-tiny\
                         && sudo apt-get install --reinstall -y build-essential && sudo rm -rf /var/lib/apt/lists/*
 
 RUN wget -nv --show-progress --progress=bar:force:noscroll ${model_bucket}/${model_file} --output-document=assets/${model_file} && \

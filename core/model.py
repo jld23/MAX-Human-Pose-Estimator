@@ -19,6 +19,7 @@ from maxfw.model import MAXModelWrapper
 import io
 import logging
 import time
+import cv2
 from PIL import Image
 import numpy as np
 from flask_restplus import abort
@@ -64,6 +65,22 @@ class ModelWrapper(MAXModelWrapper):
         except IOError as e:
             logger.error(str(e))
             abort(400, "Please submit a valid image in PNG, TIFF or JPEG format")
+    
+    def _read_video(self, video_data):
+        try:
+            cap = cv2.VideoCapture('/tmp/file1.mp4')
+            FRAME_WIDTH = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+            FRAME_HEIGHT = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+            while cap.get(cv2.CAP_PROP_POS_FRAMES) < cap.get(cv2.CAP_PROP_FRAME_COUNT):
+                _, img = cap.read()
+                self._read_image(img)
+                
+
+
+        except IOError as e:
+            logger.error(str(e))
+            abort(400, "Please submit a valid video in MP4 format")
+
 
     def _predict(self, x):
         t = time.time()
